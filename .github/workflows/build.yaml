@@ -20,14 +20,14 @@ jobs:
 
     - name: Read bookmarklet.txt
       id: read-bookmarklet
-      run: echo "::set-output name=bookmarklet::$(cat bookmarklet.txt)"
+      run: echo "BOOKMARKLET=$(cat bookmarklet.txt)" >> "$GITHUB_ENB"
 
     - name: Update index.html
       working-directory: ${{ github.workspace }}
       run: |
         pwd
         ls
-        sed -i -e 's|<a href="[^"]*" onclick="return false;">GPSH</a>|<a href="THIS IS A TEST" onclick="return false;">GPSH</a>|g' index.html
+        sed -i -e 's|<a href="[^"]*" onclick="return false;">GPSH</a>|<a href="$BOOKMARKLET" onclick="return false;">GPSH</a>|g' index.html
 
     - name: Commit changes
       run: |
