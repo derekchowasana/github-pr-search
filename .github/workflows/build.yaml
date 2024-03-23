@@ -8,6 +8,8 @@ on:
 jobs:
   update-html:
     runs-on: ubuntu-latest
+    outputs:
+      should_deploy: ${{ steps.upload-artifact.outputs.uploaded }}
 
     steps:
     - name: Checkout repository
@@ -49,6 +51,7 @@ jobs:
       id: upload-artifact
       if: steps.build-jekyll.conclusion == 'success'
       uses: actions/upload-pages-artifact@v3
+      run: echo "uploaded=true" >> $GITHUB_OUTPUT
 
   deploy:
     permissions:
@@ -57,10 +60,10 @@ jobs:
       id-token: write
     runs-on: ubuntu-latest
     needs: update-html
-    if: needs.update-html.steps.upload-artifact.conclusion == 'success'
+    if: needs.update-html.outputs.should_deploy == 'true'
     environment:
       name: github-pages
-      url: ${{steps.deployment.outputs.page_url}}
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Deploy to Github Pages
         id: deployment
