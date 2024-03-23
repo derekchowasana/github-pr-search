@@ -19,8 +19,7 @@ jobs:
     - name: Run bookmarkify.py
       run: |
         pip install --upgrade pip
-        pip install -r requirements.txt  # If you have any Python dependencies
-        python bookmarkify.py script.js > bookmarklet.txt
+        python bookmarkify.py github-search-helper.js > bookmarklet.txt
 
     - name: Read bookmarklet.txt
       id: read-bookmarklet
