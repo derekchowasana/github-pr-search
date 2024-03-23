@@ -15,18 +15,15 @@ jobs:
 
     - name: Run bookmarkify.py
       run: |
-        pip install --upgrade pip
         python bookmarkify.py github-search-helper.js > bookmarklet.txt
 
     - name: Read bookmarklet.txt
       id: read-bookmarklet
-      run: echo "BOOKMARKLET=$(cat bookmarklet.txt)" >> "$GITHUB_ENB"
+      run: echo "BOOKMARKLET=$(cat bookmarklet.txt)" >> "$GITHUB_ENV"
 
     - name: Update index.html
       working-directory: ${{ github.workspace }}
       run: |
-        pwd
-        ls
         sed -i -e 's|<a href="[^"]*" onclick="return false;">GPSH</a>|<a href="$BOOKMARKLET" onclick="return false;">GPSH</a>|g' index.html
 
     - name: Commit changes
