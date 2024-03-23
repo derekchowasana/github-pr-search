@@ -5,7 +5,7 @@ if (getToggleButton()) {
   return;
 }
 
-const VERSION = "v1.0.1";
+const VERSION = "v1.0.2";
 const COMPANY_NAME = "Asana";
 const ID_VERSION_TOOLTIP = ID_PREFIX + "-version-tooltip";
 const ID_SEARCH_TOOL_BAR = ID_PREFIX + "-search-toolbar";
@@ -149,67 +149,66 @@ function createUsernameSearchInput() {
     if (e.target.value.trim() === "") {
       hideElement(typeaheadResultContainer);
       return;
-    } else {
-      searchUsers(e.target.value)
-        .then((users) => {
-          const typeaheadResultContainer = getTypeaheadResultContainer();
-          removeChildren(typeaheadResultContainer);
-
-          if (users.length === 0) {
-            typeaheadResultContainer.textContent = "No results found";
-            return;
-          }
-
-          const usernameInput = getUsernameSearchInput();
-
-          users.forEach(({ username, img }, index) => {
-            const resultListItem = createElement("div", {
-              id: `${ID_TYPEAHEAD_RESULT_ITEM_PREFIX}-${index}`,
-              style: css_typeaheadResultItem,
-              tabindex: index,
-            });
-            resultListItem.onclick = () => {
-              usernameInput.value = username;
-              removeChildren(typeaheadResultContainer);
-              hideElement(typeaheadResultContainer);
-            };
-            resultListItem.onmouseenter = () =>
-              (resultListItem.style.background = SELECTED_BG);
-            resultListItem.onmouseleave = () =>
-              (resultListItem.style.background = GITHUB_BG);
-
-            img.style.cssText = css_typeaheadResultAvatar;
-            resultListItem.appendChild(img);
-
-            const text = document.createElement("span");
-            text.textContent = username;
-            resultListItem.appendChild(text);
-
-            typeaheadResultContainer.append(resultListItem);
-          });
-        })
-        .catch((err) => {
-          console.error(err);
-
-          const typeaheadResultContainer = getTypeaheadResultContainer();
-          removeChildren(typeaheadResultContainer);
-
-          const errorContainer = createElement("div");
-
-          if (err.message === "require-sso") {
-            const requireSsoMessage = createRequireSsoMessage();
-            errorContainer.appendChild(requireSsoMessage);
-          } else {
-            const errorMessage = createElement("span", {
-              style: "color: #982525",
-            });
-            errorMessage.innerText = `Error: ${err.message}`;
-            errorContainer.appendChild(errorMessage);
-          }
-
-          typeaheadResultContainer.appendChild(errorContainer);
-        });
     }
+
+    searchUsers(e.target.value)
+      .then((users) => {
+        const typeaheadResultContainer = getTypeaheadResultContainer();
+        removeChildren(typeaheadResultContainer);
+
+        if (users.length === 0) {
+          typeaheadResultContainer.textContent = "No results found";
+          return;
+        }
+
+        users.forEach(({ username, img }, index) => {
+          const resultListItem = createElement("div", {
+            id: `${ID_TYPEAHEAD_RESULT_ITEM_PREFIX}-${index}`,
+            style: css_typeaheadResultItem,
+            tabindex: index,
+          });
+          resultListItem.onclick = () => {
+            const usernameInput = getUsernameSearchInput();
+            usernameInput.value = username;
+            removeChildren(typeaheadResultContainer);
+            hideElement(typeaheadResultContainer);
+          };
+          resultListItem.onmouseenter = () =>
+            (resultListItem.style.background = SELECTED_BG);
+          resultListItem.onmouseleave = () =>
+            (resultListItem.style.background = GITHUB_BG);
+
+          img.style.cssText = css_typeaheadResultAvatar;
+          resultListItem.appendChild(img);
+
+          const text = document.createElement("span");
+          text.textContent = username;
+          resultListItem.appendChild(text);
+
+          typeaheadResultContainer.append(resultListItem);
+        });
+      })
+      .catch((err) => {
+        console.error(err);
+
+        const typeaheadResultContainer = getTypeaheadResultContainer();
+        removeChildren(typeaheadResultContainer);
+
+        const errorContainer = createElement("div");
+
+        if (err.message === "require-sso") {
+          const requireSsoMessage = createRequireSsoMessage();
+          errorContainer.appendChild(requireSsoMessage);
+        } else {
+          const errorMessage = createElement("span", {
+            style: "color: #982525",
+          });
+          errorMessage.innerText = `Error: ${err.message}`;
+          errorContainer.appendChild(errorMessage);
+        }
+
+        typeaheadResultContainer.appendChild(errorContainer);
+      });
   }, 250);
 
   input.oninput = inputHandler;
