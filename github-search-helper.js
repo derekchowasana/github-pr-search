@@ -5,7 +5,7 @@ if (getToggleButton()) {
   return;
 }
 
-const VERSION = "v1.0.2";
+const VERSION = "v1.0.3";
 const COMPANY_NAME = "Asana";
 const ID_VERSION_TOOLTIP = ID_PREFIX + "-version-tooltip";
 const ID_SEARCH_TOOL_BAR = ID_PREFIX + "-search-toolbar";
