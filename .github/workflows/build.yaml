@@ -1,4 +1,9 @@
 name: Generate Bookmarklet and Update Index HTML
+inputs:
+  name:
+    description: 'Artifact name'
+    required: false
+    default: 'github-pages'
 
 on:
   push:
@@ -24,3 +29,12 @@ jobs:
         git add index.html
         git commit -m "Update bookmarklet in index.html"
         git push https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:${{ github.ref }}
+
+    - name: Upload artifact
+      id: upload-artifact
+      working-directory: ${{ github.workspace }}
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ inputs.name }}
+        path: ./index.html
+        if-no-files-found: error
