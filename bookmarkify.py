@@ -36,7 +36,7 @@ if __name__ == "__main__":
         sys.exit(1)
 
     input_file = sys.argv[1]
-    output_file = "bookmarklet_output.js"
+    output_file = "bookmarklet_output.txt"
 
     transform_javascript(input_file, output_file)
     print("Transformation complete. Transformed file saved as:", output_file)

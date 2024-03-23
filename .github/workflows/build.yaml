@@ -15,11 +15,8 @@ jobs:
 
     - name: Run bookmarkify.py
       run: |
-        python bookmarkify.py github-search-helper.js > bookmarklet.txt
-
-    - name: Read bookmarklet.txt
-      id: read-bookmarklet
-      run: echo "BOOKMARKLET=$(cat bookmarklet.txt)" >> "$GITHUB_ENV"
+        python bookmarkify.py github-search-helper.js
+        echo "BOOKMARKLET=$(cat bookmarklet_output.txt)" >> "$GITHUB_ENV"
 
     - name: Update index.html
       working-directory: ${{ github.workspace }}
