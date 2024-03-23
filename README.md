@@ -1,1 +1,1 @@
-# [github-pr-search](https://derekchowasana.github.io/github-pr-search/)
+# [github-pr-search-helper](https://derekchowasana.github.io/github-pr-search/)
