@@ -30,7 +30,7 @@ jobs:
       run: |
         pwd
         ls
-        sed -i '' 's|<a href="[^"]*" onclick="return false;">GPSH</a>|<a href="THIS IS A TEST" onclick="return false;">GPSH</a>|g' index.html
+        sed -i -e 's|<a href="[^"]*" onclick="return false;">GPSH</a>|<a href="THIS IS A TEST" onclick="return false;">GPSH</a>|g' index.html
 
     - name: Commit changes
       working-directory: ${{ github.workspace }}
