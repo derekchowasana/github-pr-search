@@ -9,7 +9,7 @@ jobs:
   update-html:
     runs-on: ubuntu-latest
     outputs:
-      should_deploy: ${{ steps.upload-artifact.outputs.uploaded }}
+      should_deploy: ${{ steps.signal-deploy.outputs.should_deploy }}
 
     steps:
     - name: Checkout repository
@@ -51,7 +51,11 @@ jobs:
       id: upload-artifact
       if: steps.build-jekyll.conclusion == 'success'
       uses: actions/upload-pages-artifact@v3
-      run: echo "uploaded=true" >> $GITHUB_OUTPUT
+    
+    - name: Signal deploy
+      id: signal-deploy
+      if: steps.upload-artifact.conclusion == 'success'
+      run: echo "should_deploy=true" >> $GITHUB_OUTPUT
 
   deploy:
     permissions:
