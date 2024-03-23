@@ -25,18 +25,23 @@ def transform_javascript(input_file, output_file):
     
     urlencoded_js = urllib.parse.quote(';'.join(transformed_lines))
 
-    bookmarklet_format = 'javascript: (() => {%s})();'%(urlencoded_js)
+    bookmarklet_script = 'javascript: (() => {%s})();'%(urlencoded_js)
+
+    with open(output_file, 'r') as f:
+        html = f.read()
+
+    final_html = re.sub(r'<a href="[^"]*" onclick="return false;">GPSH</a>','<a href="{}" onclick="return false;">GPSH</a>'.format(bookmarklet_script), html)
 
     with open(output_file, 'w') as f:
-        f.write(bookmarklet_format)
-
+        f.write(final_html)
+    
 if __name__ == "__main__":
     if len(sys.argv) != 2:
         print("Usage: python script.py input_file.js")
         sys.exit(1)
 
     input_file = sys.argv[1]
-    output_file = "bookmarklet_output.txt"
+    output_file = "index.html"
 
     transform_javascript(input_file, output_file)
     print("Transformation complete. Transformed file saved as:", output_file)
