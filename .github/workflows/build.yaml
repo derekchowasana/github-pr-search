@@ -1,9 +1,4 @@
 name: Generate Bookmarklet and Update Index HTML
-inputs:
-  name:
-    description: 'Artifact name'
-    required: false
-    default: 'github-pages'
 
 on:
   push:
@@ -30,11 +25,21 @@ jobs:
         git commit -m "Update bookmarklet in index.html"
         git push https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:${{ github.ref }}
 
-    - name: Upload artifact
-      id: upload-artifact
-      working-directory: ${{ github.workspace }}
-      uses: actions/upload-artifact@v4
-      with:
-        name: ${{ inputs.name }}
-        path: ./index.html
-        if-no-files-found: error
+    - name: Setup Pages
+      id: pages
+      uses: actions/configure-pages@v3
+
+  deploy:
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: github-pages
+      url: ${{steps.deployment.outputs.page_url}}
+    steps:
+      - name: Deploy to Github Pages
+        id: deployment
+        uses: actions/deploy-pages@v3
