@@ -43,6 +43,7 @@ function main() {
       { label: "Closed", value: "closed" },
       { label: "Merged", value: "merged" },
       { label: "Draft", value: "draft" },
+      { label: "None", value: "" },
     ],
     ID_STATUS_DROPDOWN
   );
@@ -54,6 +55,7 @@ function main() {
       { label: "Assigned to", value: "assignee" },
       { label: "Mentions", value: "mentions" },
       { label: "Review requested", value: "review-requested" },
+      { label: "None", value: "" },
     ],
     ID_USERNAME_PREDICATE_DROPDOWN
   );
@@ -152,20 +154,20 @@ function createUsernameSearchInput() {
     }
 
     searchUsers(e.target.value)
-      .then((users) => {
+      .then((userData) => {
         const typeaheadResultContainer = getTypeaheadResultContainer();
         removeChildren(typeaheadResultContainer);
 
-        if (users.length === 0) {
+        if (userData.length === 0) {
           typeaheadResultContainer.textContent = "No results found";
           return;
         }
 
-        users.forEach(({ username, img }, index) => {
+        userData.forEach(({ username, img }, index) => {
           const resultListItem = createElement("div", {
             id: `${ID_TYPEAHEAD_RESULT_ITEM_PREFIX}-${index}`,
             style: css_typeaheadResultItem,
-            tabindex: index,
+            tabindex: 0,
           });
           resultListItem.onclick = () => {
             const usernameInput = getUsernameSearchInput();
@@ -379,9 +381,30 @@ function executeSearch() {
   const usernamePredicate = getUsernamePredicate().value;
   const text = getTextSearchInput().value;
 
-  window.location.replace(
-    `https://github.com/pulls?q=is%3A${status}+is%3Apr+${usernamePredicate}%3A${username}+${text}`
-  );
+  const urlQueryParams = [];
+
+  if (status) {
+    urlQueryParams.push(`is%3A${status}`);
+  }
+
+  if (usernamePredicate && username) {
+    urlQueryParams.push(`is%3Apr+${usernamePredicate}%3A${username}`);
+  } else if (username) {
+    urlQueryParams.push(username);
+  }
+
+  if (text) {
+    urlQueryParams.push(text);
+  }
+
+  let urlQueryParamsString = "";
+
+  if (urlQueryParams.length) {
+    urlQueryParamsString += "?q=";
+    urlQueryParamsString += urlQueryParams.join("+");
+  }
+
+  window.location.replace(`https://github.com/pulls${urlQueryParamsString}`);
 }
 
 ////////////////////////////////////////////////////////////
