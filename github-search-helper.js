@@ -1,9 +1,9 @@
 const ID_PREFIX = "GPSH";
 const ID_TOGGLE_BUTTON = ID_PREFIX + "-toggle-button";
 
-// if (getToggleButton()) {
-//   return;
-// }
+if (getToggleButton()) {
+  return;
+}
 
 const VERSION = "v1.0.1";
 const COMPANY_NAME = "Asana";
