@@ -1,9 +1,9 @@
 const ID_PREFIX = "GPSH";
 const ID_TOGGLE_BUTTON = ID_PREFIX + "-toggle-button";
 
-if (getToggleButton()) {
-  return;
-}
+// if (getToggleButton()) {
+//   return;
+// }
 
 const VERSION = "v1.0.1";
 const COMPANY_NAME = "Asana";
@@ -61,14 +61,14 @@ function main() {
   );
   searchToolbar.appendChild(usernamePredicateDropdown);
 
+  const usernameSearchInput = createUsernameSearchInput();
+  searchToolbar.appendChild(usernameSearchInput);
+
   const typeaheadResultContainer = createElement("div", {
     id: ID_TYPEAHEAD_RESULT_CONTAINER,
     style: css_typeaheadResultContainer,
   });
   searchToolbar.append(typeaheadResultContainer);
-
-  const usernameSearchInput = createUsernameSearchInput();
-  searchToolbar.appendChild(usernameSearchInput);
 
   const textSearchInput = createTextSearchInput();
   searchToolbar.appendChild(textSearchInput);
@@ -153,6 +153,13 @@ function createUsernameSearchInput() {
       return;
     }
 
+    function addUsernameToInput(username, typeaheadResultContainer) {
+      const usernameInput = getUsernameSearchInput();
+      usernameInput.value = username;
+      removeChildren(typeaheadResultContainer);
+      hideElement(typeaheadResultContainer);
+    }
+
     searchUsers(e.target.value)
       .then((userData) => {
         const typeaheadResultContainer = getTypeaheadResultContainer();
@@ -169,11 +176,28 @@ function createUsernameSearchInput() {
             style: css_typeaheadResultItem,
             tabindex: 0,
           });
+
           resultListItem.onclick = () => {
-            const usernameInput = getUsernameSearchInput();
-            usernameInput.value = username;
-            removeChildren(typeaheadResultContainer);
-            hideElement(typeaheadResultContainer);
+            addUsernameToInput(username, typeaheadResultContainer);
+          };
+          resultListItem.onkeydown = (e) => {
+            switch (e.key) {
+              case "Enter":
+                addUsernameToInput(username, typeaheadResultContainer);
+                return;
+              case "ArrowDown":
+                e.preventDefault();
+                e.target.nextElementSibling?.focus();
+                return;
+              case "ArrowUp":
+                e.preventDefault();
+                if (e.target.parentElement.firstChild === e.target) {
+                  getUsernameSearchInput().focus();
+                } else {
+                  e.target.previousElementSibling.focus();
+                }
+                return;
+            }
           };
           resultListItem.onmouseenter = () =>
             (resultListItem.style.background = SELECTED_BG);
@@ -227,6 +251,12 @@ function createUsernameSearchInput() {
       typeaheadResultContainer.childElementCount > 0
     ) {
       showElement(typeaheadResultContainer);
+    }
+  };
+  input.onkeydown = (e) => {
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      e.target.nextElementSibling.firstChild.focus();
     }
   };
 
