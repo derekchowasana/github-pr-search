@@ -1,3 +1,10 @@
+const GITHUB_PULLS_URL = "https://github.com/pulls";
+
+if (location.href !== GITHUB_PULLS_URL) {
+  location = GITHUB_PULLS_URL;
+  return;
+}
+
 const ID_PREFIX = "GPSH";
 const ID_TOGGLE_BUTTON = ID_PREFIX + "-toggle-button";
 
