@@ -8,12 +8,13 @@ if (location.href !== GITHUB_PULLS_URL) {
 const ID_PREFIX = "GPSH";
 const ID_TOGGLE_BUTTON = ID_PREFIX + "-toggle-button";
 
-if (getToggleButton()) {
+if (document.getElementById(ID_TOGGLE_BUTTON)) {
   return;
 }
 
 const VERSION = "v1.0.2";
 const COMPANY_NAME = "Asana";
+
 const ID_VERSION_TOOLTIP = ID_PREFIX + "-version-tooltip";
 const ID_SEARCH_TOOL_BAR = ID_PREFIX + "-search-toolbar";
 const ID_STATUS_DROPDOWN = ID_PREFIX + "-status-dropdown";
@@ -311,10 +312,6 @@ function createRequireSsoMessage() {
 // DOM HELPERS
 ////////////////////////////////////////////////////////////
 
-function getToggleButton() {
-  return document.getElementById(ID_TOGGLE_BUTTON);
-}
-
 function getVersionTooltip() {
   return document.getElementById(ID_VERSION_TOOLTIP);
 }
@@ -380,7 +377,7 @@ function debounce(fn, time) {
 }
 
 ////////////////////////////////////////////////////////////
-// Requests
+// REQUESTS
 ////////////////////////////////////////////////////////////
 
 async function searchUsers(queryString) {
