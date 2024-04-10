@@ -4,7 +4,7 @@ import sys
 import re
 import urllib.parse
 
-def transform_javascript(input_file, output_file):
+def transform_javascript_to_bookmarklet(input_file):
     with open(input_file, 'r') as f:
         content = f.read()
 
@@ -25,14 +25,15 @@ def transform_javascript(input_file, output_file):
     
     urlencoded_js = urllib.parse.quote(';'.join(transformed_lines))
 
-    bookmarklet_script = 'javascript: (() => {%s})();'%(urlencoded_js)
+    return 'javascript: (() => {%s})();'%(urlencoded_js)
 
-    with open(output_file, 'r') as f:
+def inject_bookmarklet_into_html(bookmarklet_script, html_file):
+    with open(html_file, 'r') as f:
         html = f.read()
 
     final_html = re.sub(r'<a href="[^"]*" onclick="return false;">GPSH</a>','<a href="{}" onclick="return false;">GPSH</a>'.format(bookmarklet_script), html)
 
-    with open(output_file, 'w') as f:
+    with open(html_file, 'w') as f:
         f.write(final_html)
     
 if __name__ == "__main__":
@@ -41,7 +42,9 @@ if __name__ == "__main__":
         sys.exit(1)
 
     input_file = sys.argv[1]
-    output_file = "index.html"
+    bookmarklet = transform_javascript_to_bookmarklet(input_file)
+    print("Transformation complete.")
 
-    transform_javascript(input_file, output_file)
-    print("Transformation complete. Transformed file saved as:", output_file)
+    html_file = "index.html"
+    inject_bookmarklet_into_html(bookmarklet, html_file)
+    print("Bookmarkelt script injected into ", html_file)

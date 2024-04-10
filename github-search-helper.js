@@ -1,6 +1,6 @@
 const GITHUB_PULLS_URL = "https://github.com/pulls";
 
-if (location.href !== GITHUB_PULLS_URL) {
+if (!location.href.startsWith(GITHUB_PULLS_URL)) {
   location = GITHUB_PULLS_URL;
   return;
 }
@@ -15,6 +15,10 @@ if (document.getElementById(ID_TOGGLE_BUTTON)) {
 const VERSION = "v1.0.2";
 const COMPANY_NAME = "Asana";
 
+////////////////////////////////////////////////////////////
+// CREATE ELEMENTS
+////////////////////////////////////////////////////////////
+
 const ID_VERSION_TOOLTIP = ID_PREFIX + "-version-tooltip";
 const ID_SEARCH_TOOL_BAR = ID_PREFIX + "-search-toolbar";
 const ID_STATUS_DROPDOWN = ID_PREFIX + "-status-dropdown";
@@ -23,71 +27,6 @@ const ID_TYPEAHEAD_RESULT_CONTAINER = ID_PREFIX + "-typeahead-result-container";
 const ID_USERNAME_SEARCH_INPUT = ID_PREFIX + "-username-search-input";
 const ID_TYPEAHEAD_RESULT_ITEM_PREFIX = ID_PREFIX + "-typeahead-result-item";
 const ID_TEXT_SEARCH_INPUT = ID_PREFIX + "-text-search-input";
-
-////////////////////////////////////////////////////////////
-// MAIN
-////////////////////////////////////////////////////////////
-
-function main() {
-  const githubSearchBar = document.querySelector(
-    "#issues_dashboard > div.subnav.d-flex.mb-3.flex-column.flex-md-row"
-  );
-
-  const toggleButton = createToggleButton();
-  githubSearchBar.before(toggleButton);
-
-  const versionTooltip = createVersionTooltip();
-  toggleButton.after(versionTooltip);
-
-  const searchToolbar = createElement("div", {
-    id: ID_SEARCH_TOOL_BAR,
-    style: css_searchToolbar,
-  });
-  toggleButton.after(searchToolbar);
-
-  const statusDropdown = createSelect(
-    [
-      { label: "Open", value: "open" },
-      { label: "Closed", value: "closed" },
-      { label: "Merged", value: "merged" },
-      { label: "Draft", value: "draft" },
-      { label: "None", value: "" },
-    ],
-    ID_STATUS_DROPDOWN
-  );
-  searchToolbar.appendChild(statusDropdown);
-
-  const usernamePredicateDropdown = createSelect(
-    [
-      { label: "Created by", value: "author" },
-      { label: "Assigned to", value: "assignee" },
-      { label: "Mentions", value: "mentions" },
-      { label: "Review requested", value: "review-requested" },
-      { label: "None", value: "" },
-    ],
-    ID_USERNAME_PREDICATE_DROPDOWN
-  );
-  searchToolbar.appendChild(usernamePredicateDropdown);
-
-  const usernameSearchInput = createUsernameSearchInput();
-  searchToolbar.appendChild(usernameSearchInput);
-
-  const typeaheadResultContainer = createElement("div", {
-    id: ID_TYPEAHEAD_RESULT_CONTAINER,
-    style: css_typeaheadResultContainer,
-  });
-  searchToolbar.append(typeaheadResultContainer);
-
-  const textSearchInput = createTextSearchInput();
-  searchToolbar.appendChild(textSearchInput);
-
-  const searchButton = createSearchButton();
-  searchToolbar.appendChild(searchButton);
-}
-
-////////////////////////////////////////////////////////////
-// CREATE ELEMENTS
-////////////////////////////////////////////////////////////
 
 function createToggleButton() {
   const button = createElement("button", {
@@ -363,20 +302,6 @@ function removeChildren(element) {
 }
 
 ////////////////////////////////////////////////////////////
-// UTIL
-////////////////////////////////////////////////////////////
-
-function debounce(fn, time) {
-  let timeoutId = null;
-  return (...args) => {
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(() => {
-      fn.apply(this, args);
-    }, time);
-  };
-}
-
-////////////////////////////////////////////////////////////
 // REQUESTS
 ////////////////////////////////////////////////////////////
 
@@ -439,6 +364,81 @@ function executeSearch() {
   }
 
   window.location.replace(`https://github.com/pulls${urlQueryParamsString}`);
+}
+
+////////////////////////////////////////////////////////////
+// UTIL
+////////////////////////////////////////////////////////////
+
+function debounce(fn, time) {
+  let timeoutId = null;
+  return (...args) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => {
+      fn.apply(this, args);
+    }, time);
+  };
+}
+
+////////////////////////////////////////////////////////////
+// MAIN
+////////////////////////////////////////////////////////////
+
+function main() {
+  const githubSearchBar = document.querySelector(
+    "#issues_dashboard > div.subnav.d-flex.mb-3.flex-column.flex-md-row"
+  );
+
+  const toggleButton = createToggleButton();
+  githubSearchBar.before(toggleButton);
+
+  const versionTooltip = createVersionTooltip();
+  toggleButton.after(versionTooltip);
+
+  const searchToolbar = createElement("div", {
+    id: ID_SEARCH_TOOL_BAR,
+    style: css_searchToolbar,
+  });
+  toggleButton.after(searchToolbar);
+
+  const statusDropdown = createSelect(
+    [
+      { label: "Open", value: "open" },
+      { label: "Closed", value: "closed" },
+      { label: "Merged", value: "merged" },
+      { label: "Draft", value: "draft" },
+      { label: "None", value: "" },
+    ],
+    ID_STATUS_DROPDOWN
+  );
+  searchToolbar.appendChild(statusDropdown);
+
+  const usernamePredicateDropdown = createSelect(
+    [
+      { label: "Created by", value: "author" },
+      { label: "Assigned to", value: "assignee" },
+      { label: "Mentions", value: "mentions" },
+      { label: "Review requested", value: "review-requested" },
+      { label: "None", value: "" },
+    ],
+    ID_USERNAME_PREDICATE_DROPDOWN
+  );
+  searchToolbar.appendChild(usernamePredicateDropdown);
+
+  const usernameSearchInput = createUsernameSearchInput();
+  searchToolbar.appendChild(usernameSearchInput);
+
+  const typeaheadResultContainer = createElement("div", {
+    id: ID_TYPEAHEAD_RESULT_CONTAINER,
+    style: css_typeaheadResultContainer,
+  });
+  searchToolbar.append(typeaheadResultContainer);
+
+  const textSearchInput = createTextSearchInput();
+  searchToolbar.appendChild(textSearchInput);
+
+  const searchButton = createSearchButton();
+  searchToolbar.appendChild(searchButton);
 }
 
 ////////////////////////////////////////////////////////////
