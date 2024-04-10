@@ -36,7 +36,6 @@ jobs:
 
     - name: Setup Pages
       id: setup-pages
-      if: steps.commit-and-push.conclusion == 'success'
       uses: actions/configure-pages@v4
 
     - name: Build with Jekyll
