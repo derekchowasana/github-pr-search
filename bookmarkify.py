@@ -40,4 +40,4 @@ if __name__ == "__main__":
 
     html_file = "index.html"
     inject_bookmarklet_into_html(bookmarklet, html_file)
-    print("Bookmarkelt script injected into ", html_file)
+    print("Bookmarklet script injected into ", html_file)
