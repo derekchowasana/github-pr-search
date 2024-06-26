@@ -17,10 +17,15 @@ jobs:
 
     - name: Run bookmarkify.py
       run: |
-        python bookmarkify.py github-search-helper.js
+        python bookmarkify.py github-pr-search-helper.js
+    
+    - name: Check if there are any changes
+      id: verify_diff
+      run: |
+        git diff --quiet . || echo "changed=true" >> $GITHUB_OUTPUT
     
     - name: Commit & Push
-      id: commit-and-push
+      id: commit_and_push
       if: steps.verify_diff.outputs.changed == 'true'
       run: |
         git config --local user.email "actions@github.com"
@@ -30,19 +35,19 @@ jobs:
         git push https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:${{ github.ref }}
 
     - name: Setup Pages
-      id: setup-pages
+      id: setup_pages
       uses: actions/configure-pages@v4
 
     - name: Build with Jekyll
       id: build-jekyll
-      if: steps.setup-pages.conclusion == 'success'
+      if: steps.setup_pages.conclusion == 'success'
       uses: actions/jekyll-build-pages@v1
       with:
         source: ./
         destination: ./_site
 
     - name: Upload artifact
-      id: upload-artifact
+      id: upload_artifact
       if: steps.build-jekyll.conclusion == 'success'
       uses: actions/upload-pages-artifact@v3
     
@@ -53,6 +58,7 @@ jobs:
       id-token: write
     runs-on: ubuntu-latest
     needs: update-html
+    if: steps.upload_artifact.conclusion == 'success'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
