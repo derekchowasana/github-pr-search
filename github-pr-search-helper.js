@@ -12,7 +12,7 @@ if (document.getElementById(ID_TOGGLE_BUTTON)) {
   return;
 }
 
-const VERSION = "v1.0.0";
+const VERSION = "v2.0.0";
 const COMPANY_NAME = "Asana";
 
 const ID_VERSION_TOOLTIP = ID_PREFIX + "-version-tooltip";
