@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  update-html:
+  update_html:
     runs-on: ubuntu-latest
 
     steps:
@@ -55,8 +55,8 @@ jobs:
       pages: write
       id-token: write
     runs-on: ubuntu-latest
-    needs: update-html
-    if: needs.update-html.result == 'success'
+    needs: update_html
+    if: needs.update_html.result == 'success'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
